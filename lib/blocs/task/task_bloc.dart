@@ -1,9 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tasks_test/core/utils.dart';
 
 import '../../core/db/hive.dart';
+import '../../core/models/cat.dart';
 import '../../core/models/task.dart';
+import '../../core/utils.dart';
 
 part 'task_event.dart';
 part 'task_state.dart';
@@ -24,7 +25,14 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
 
     on<EditTask>((event, emit) async {
       for (Task task in tasks) {
-        if (task.id == event.task.id) task.subtasks = event.task.subtasks;
+        if (task.id == event.task.id) {
+          task.title = event.task.title;
+          task.cat = event.task.cat;
+          task.date = event.task.date;
+          task.startTime = event.task.startTime;
+          task.endTime = event.task.endTime;
+          task.remind = event.task.remind;
+        }
       }
       await updateTasks();
       emit(TaskLoaded(tasks: tasks));
@@ -59,6 +67,11 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     });
 
     on<ExitSearch>((event, emit) async {
+      emit(TaskLoaded(tasks: tasks));
+    });
+
+    on<CreateCat>((event, emit) async {
+      cats.insert(0, event.cat);
       emit(TaskLoaded(tasks: tasks));
     });
   }

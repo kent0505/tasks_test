@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../blocs/task/task_bloc.dart';
 import '../blocs/navbar/navbar_bloc.dart';
-import '../core/config/app_colors.dart';
 import '../core/db/hive.dart';
-import '../core/models/category.dart';
-import '../core/models/subtask.dart';
+import '../core/models/cat.dart';
 import '../core/models/task.dart';
 import '../core/utils.dart';
-import '../widgets/button.dart';
-import '../widgets/check_widget.dart';
+import '../widgets/cat_card.dart';
+import '../widgets/create_cat_button.dart';
 import '../widgets/page_title.dart';
-import '../widgets/svg_widget.dart';
+import '../widgets/remind_button.dart';
+import '../widgets/title_text.dart';
 import '../widgets/txt_field.dart';
 
 class AddTaskPage extends StatefulWidget {
@@ -24,14 +22,13 @@ class AddTaskPage extends StatefulWidget {
 }
 
 class _AddTaskPageState extends State<AddTaskPage> {
-  final controller1 = TextEditingController(); // title
-  final controller2 = TextEditingController(); // date
-  final controller3 = TextEditingController(); // time start
-  final controller4 = TextEditingController(); // time end
-  List<Subtask> subtasks = [];
+  final controller1 = TextEditingController();
+  final controller2 = TextEditingController();
+  final controller3 = TextEditingController();
+  final controller4 = TextEditingController();
 
-  Category? category;
-
+  // List<Subtask> subtasks = [];
+  Cat? cat;
   bool remind = false;
   bool active = false;
 
@@ -39,40 +36,39 @@ class _AddTaskPageState extends State<AddTaskPage> {
     setState(() {
       active = [
         controller1,
-        // controller2,
         controller3,
         controller4,
       ].every((controller) => controller.text.isNotEmpty);
     });
   }
 
-  void onAddSubtask() {
-    setState(() {
-      subtasks.add(Subtask(
-        id: subtasks.length,
-        title: '',
-        done: false,
-      ));
-    });
-  }
+  // void onAddSubtask() {
+  //   setState(() {
+  //     subtasks.add(Subtask(
+  //       id: subtasks.length,
+  //       title: '',
+  //       done: false,
+  //     ));
+  //   });
+  // }
 
-  void onSubtaskDone(Subtask value) {
-    setState(() {
-      for (Subtask subtask in subtasks) {
-        if (subtask.id == value.id) subtask.done = !subtask.done;
-      }
-    });
-  }
+  // void onSubtaskDone(Subtask value) {
+  //   setState(() {
+  //     for (Subtask subtask in subtasks) {
+  //       if (subtask.id == value.id) subtask.done = !subtask.done;
+  //     }
+  //   });
+  // }
 
-  void onSubtaskDelete(Subtask value) {
-    setState(() {
-      subtasks.removeWhere((element) => element.id == value.id);
-    });
-  }
+  // void onSubtaskDelete(Subtask value) {
+  //   setState(() {
+  //     subtasks.removeWhere((element) => element.id == value.id);
+  //   });
+  // }
 
-  void onCategory(Category value) {
+  void onCategory(Cat value) {
     setState(() {
-      category?.id == value.id ? category = null : category = value;
+      cat?.id == value.id ? cat = null : cat = value;
     });
   }
 
@@ -88,8 +84,8 @@ class _AddTaskPageState extends State<AddTaskPage> {
             task: Task(
               id: getTimestamp(),
               title: controller1.text,
-              subtasks: subtasks,
-              categoryId: category?.iconId ?? 0,
+              // subtasks: subtasks,
+              cat: cat,
               date: controller2.text,
               startTime: controller3.text,
               endTime: controller4.text,
@@ -128,44 +124,48 @@ class _AddTaskPageState extends State<AddTaskPage> {
               vertical: 8,
             ).copyWith(bottom: 75),
             children: [
-              const _TitleText('Add a title for your task'),
+              const TitleText('Add a title for your task'),
               const SizedBox(height: 8),
               TxtField(
                 controller: controller1,
                 hintText: 'Title',
                 onChanged: onChanged,
               ),
+              // const SizedBox(height: 16),
+              // ...List.generate(
+              //   subtasks.length,
+              //   (index) {
+              //     return SubtaskField(
+              //       onDone: onSubtaskDone,
+              //       onDelete: onSubtaskDelete,
+              //       subtask: subtasks[index],
+              //     );
+              //   },
+              // ),
+              // SubtaskAddButton(onPressed: onAddSubtask),
               const SizedBox(height: 16),
-              ...List.generate(
-                subtasks.length,
-                (index) {
-                  return _SubtaskField(
-                    onDone: onSubtaskDone,
-                    onDelete: onSubtaskDelete,
-                    subtask: subtasks[index],
+              const TitleText('Select a category for your task (optional)'),
+              const SizedBox(height: 8),
+              BlocBuilder<TaskBloc, TaskState>(
+                builder: (context, state) {
+                  return Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: List.generate(
+                      cats.length,
+                      (index) {
+                        return CatCard(
+                          cat: cats[index],
+                          current: cat,
+                          onPressed: onCategory,
+                        );
+                      },
+                    )..add(const CreateCatButton()),
                   );
                 },
               ),
-              _AddSubTask(onPressed: onAddSubtask),
               const SizedBox(height: 16),
-              const _TitleText('Select a category for your task (optional)'),
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: List.generate(
-                  categories.length,
-                  (index) {
-                    return _CategoryButton(
-                      category: categories[index],
-                      current: category,
-                      onPressed: onCategory,
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 16),
-              const _TitleText('Set a date for your task'),
+              const TitleText('Set a date for your task'),
               const SizedBox(height: 8),
               TxtField(
                 controller: controller2,
@@ -174,7 +174,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                 datePicker: true,
               ),
               const SizedBox(height: 16),
-              const _TitleText('Set a time for your task'),
+              const TitleText('Set a time for your task'),
               const SizedBox(height: 8),
               Row(
                 children: [
@@ -198,7 +198,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                 ],
               ),
               const SizedBox(height: 16),
-              _Remind(
+              RemindButton(
                 active: remind,
                 onPressed: onRemind,
               ),
@@ -207,214 +207,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _TitleText extends StatelessWidget {
-  const _TitleText(this.title);
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      title,
-      style: const TextStyle(
-        color: AppColors.white,
-        fontSize: 16,
-        fontFamily: 'w700',
-      ),
-    );
-  }
-}
-
-class _AddSubTask extends StatelessWidget {
-  const _AddSubTask({required this.onPressed});
-
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return Button(
-      onPressed: onPressed,
-      child: const SizedBox(
-        height: 48,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SvgWidget('assets/add.svg'),
-            SizedBox(width: 10),
-            Text(
-              'Add sub-tasks',
-              style: TextStyle(
-                color: AppColors.accent,
-                fontSize: 18,
-                fontFamily: 'w700',
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _SubtaskField extends StatelessWidget {
-  const _SubtaskField({
-    required this.subtask,
-    required this.onDone,
-    required this.onDelete,
-  });
-
-  final Subtask subtask;
-  final void Function(Subtask) onDone;
-  final void Function(Subtask) onDelete;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 44,
-      child: Row(
-        children: [
-          CheckWidget(
-            active: subtask.done,
-            onPressed: () {
-              onDone(subtask);
-            },
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: TextField(
-              style: const TextStyle(
-                color: AppColors.white,
-                fontSize: 16,
-                fontFamily: 'w700',
-              ),
-              textCapitalization: TextCapitalization.sentences,
-              decoration: const InputDecoration(
-                contentPadding: EdgeInsets.symmetric(),
-                hintText: 'Type your sub-task',
-                hintStyle: TextStyle(
-                  color: AppColors.text1,
-                  fontSize: 14,
-                  fontFamily: 'w500',
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.transparent),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.transparent),
-                ),
-              ),
-              inputFormatters: [
-                LengthLimitingTextInputFormatter(50),
-              ],
-              onTapOutside: (event) {
-                FocusManager.instance.primaryFocus?.unfocus();
-              },
-              onChanged: (value) {
-                subtask.title = value;
-              },
-            ),
-          ),
-          Button(
-            onPressed: () {
-              onDelete(subtask);
-            },
-            child: const SvgWidget('assets/delete.svg'),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _CategoryButton extends StatelessWidget {
-  const _CategoryButton({
-    required this.category,
-    required this.current,
-    required this.onPressed,
-  });
-
-  final Category category;
-  final Category? current;
-  final void Function(Category) onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return Button(
-      onPressed: () {
-        onPressed(category);
-      },
-      minSize: 36,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        height: 36,
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        decoration: BoxDecoration(
-          color: AppColors.tertiary2,
-          borderRadius: BorderRadius.circular(36),
-          border: Border.all(
-            width: 1.5,
-            color: category.id == current?.id
-                ? AppColors.accent
-                : Colors.transparent,
-          ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SvgWidget('assets/cat/cat${category.iconId}.svg'),
-            const SizedBox(width: 4),
-            Text(
-              category.title,
-              style: const TextStyle(
-                color: AppColors.white,
-                fontSize: 16,
-                fontFamily: 'w700',
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _Remind extends StatelessWidget {
-  const _Remind({
-    required this.active,
-    required this.onPressed,
-  });
-
-  final bool active;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return Button(
-      onPressed: onPressed,
-      child: SizedBox(
-        height: 44,
-        child: Row(
-          children: [
-            CheckWidget(
-              active: active,
-              onPressed: null,
-            ),
-            const SizedBox(width: 8),
-            const Text(
-              'Remind me',
-              style: TextStyle(
-                color: AppColors.white,
-                fontSize: 16,
-                fontFamily: 'w700',
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

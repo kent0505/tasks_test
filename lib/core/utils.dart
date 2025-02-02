@@ -2,9 +2,6 @@ import 'dart:developer' as developer;
 
 import 'package:intl/intl.dart';
 
-import 'db/hive.dart';
-import 'models/category.dart';
-
 int getTimestamp() => DateTime.now().millisecondsSinceEpoch ~/ 1000;
 
 String timestampToString(int timestamp) {
@@ -21,10 +18,3 @@ String timeToString(DateTime time) {
 }
 
 void logger(Object message) => developer.log(message.toString());
-
-String getCategory(int id) {
-  for (Category category in categories) {
-    if (category.iconId == id) return category.title;
-  }
-  return '';
-}

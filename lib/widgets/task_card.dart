@@ -52,9 +52,10 @@ class TaskCard extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      if (task.categoryId != 0)
-                        SvgWidget('assets/cat/cat${task.categoryId}.svg'),
-                      const SizedBox(width: 4),
+                      if (task.cat != null) ...[
+                        SvgWidget('assets/cat/cat${task.cat!.iconId}.svg'),
+                        const SizedBox(width: 4),
+                      ],
                       Text(
                         task.title,
                         maxLines: 1,

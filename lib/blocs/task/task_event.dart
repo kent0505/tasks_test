@@ -36,3 +36,9 @@ class SearchTasks extends TaskEvent {
 }
 
 class ExitSearch extends TaskEvent {}
+
+class CreateCat extends TaskEvent {
+  CreateCat({required this.cat});
+
+  final Cat cat;
+}

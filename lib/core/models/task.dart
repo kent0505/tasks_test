@@ -1,5 +1,7 @@
 import 'package:hive_flutter/hive_flutter.dart';
 
+import 'cat.dart';
+
 @HiveType(typeId: 0)
 class Task {
   @HiveField(0)
@@ -8,11 +10,11 @@ class Task {
   @HiveField(1)
   String title;
 
-  @HiveField(2)
-  List subtasks;
+  // @HiveField(2)
+  // List subtasks;
 
   @HiveField(3)
-  int categoryId;
+  Cat? cat;
 
   @HiveField(4)
   String date;
@@ -32,8 +34,8 @@ class Task {
   Task({
     required this.id,
     required this.title,
-    required this.subtasks,
-    required this.categoryId,
+    // required this.subtasks,
+    this.cat,
     required this.date,
     required this.startTime,
     required this.endTime,
@@ -51,8 +53,8 @@ class TaskAdapter extends TypeAdapter<Task> {
     return Task(
       id: reader.readInt(),
       title: reader.readString(),
-      subtasks: reader.read(),
-      categoryId: reader.readInt(),
+      // subtasks: reader.read(),
+      cat: reader.read(),
       date: reader.readString(),
       startTime: reader.readString(),
       endTime: reader.readString(),
@@ -65,8 +67,8 @@ class TaskAdapter extends TypeAdapter<Task> {
   void write(BinaryWriter writer, Task obj) {
     writer.writeInt(obj.id);
     writer.writeString(obj.title);
-    writer.write(obj.subtasks);
-    writer.writeInt(obj.categoryId);
+    // writer.write(obj.subtasks);
+    writer.write(obj.cat);
     writer.writeString(obj.date);
     writer.writeString(obj.startTime);
     writer.writeString(obj.endTime);

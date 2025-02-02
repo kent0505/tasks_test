@@ -1,7 +1,7 @@
 import 'package:hive_flutter/hive_flutter.dart';
 
 @HiveType(typeId: 2)
-class Category {
+class Cat {
   @HiveField(0)
   final int id;
 
@@ -11,20 +11,20 @@ class Category {
   @HiveField(2)
   int iconId;
 
-  Category({
+  Cat({
     required this.id,
     required this.title,
     required this.iconId,
   });
 }
 
-class CategoryAdapter extends TypeAdapter<Category> {
+class CatAdapter extends TypeAdapter<Cat> {
   @override
   final typeId = 2;
 
   @override
-  Category read(BinaryReader reader) {
-    return Category(
+  Cat read(BinaryReader reader) {
+    return Cat(
       id: reader.readInt(),
       title: reader.readString(),
       iconId: reader.readInt(),
@@ -32,16 +32,16 @@ class CategoryAdapter extends TypeAdapter<Category> {
   }
 
   @override
-  void write(BinaryWriter writer, Category obj) {
+  void write(BinaryWriter writer, Cat obj) {
     writer.writeInt(obj.id);
     writer.writeString(obj.title);
     writer.writeInt(obj.iconId);
   }
 }
 
-List<Category> defaultCategories = [
-  Category(id: 1, title: 'Work', iconId: 1),
-  Category(id: 2, title: 'Sport', iconId: 13),
-  Category(id: 3, title: 'Shopping', iconId: 14),
-  Category(id: 4, title: 'Education', iconId: 15),
+List<Cat> defaultCategories = [
+  Cat(id: 1, title: 'Work', iconId: 1),
+  Cat(id: 2, title: 'Sport', iconId: 13),
+  Cat(id: 3, title: 'Shopping', iconId: 14),
+  Cat(id: 4, title: 'Education', iconId: 15),
 ];
