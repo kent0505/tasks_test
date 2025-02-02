@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
-import '../config/app_colors.dart';
+import '../core/config/app_colors.dart';
 
 class Button extends StatelessWidget {
   const Button({

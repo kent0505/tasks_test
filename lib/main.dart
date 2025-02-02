@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'src/blocs/bloc/task_bloc.dart';
-import 'src/core/config/themes.dart';
-import 'src/blocs/navbar/navbar_bloc.dart';
-import 'src/features/splash/splash_page.dart';
+import 'blocs/task/task_bloc.dart';
+import 'blocs/navbar/navbar_bloc.dart';
+import 'core/config/themes.dart';
+import 'pages/splash_page.dart';
 
 void main() {
   runApp(const MyApp());

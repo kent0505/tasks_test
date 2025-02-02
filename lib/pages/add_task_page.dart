@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../blocs/bloc/task_bloc.dart';
-import '../../blocs/navbar/navbar_bloc.dart';
-import '../../core/config/app_colors.dart';
-import '../../core/db/hive.dart';
-import '../../core/models/category.dart';
-import '../../core/models/subtask.dart';
-import '../../core/models/task.dart';
-import '../../core/utils.dart';
-import '../../core/widgets/button.dart';
-import '../../core/widgets/check_widget.dart';
-import '../../core/widgets/page_title.dart';
-import '../../core/widgets/svg_widget.dart';
-import '../../core/widgets/txt_field.dart';
+import '../blocs/task/task_bloc.dart';
+import '../blocs/navbar/navbar_bloc.dart';
+import '../core/config/app_colors.dart';
+import '../core/db/hive.dart';
+import '../core/models/category.dart';
+import '../core/models/subtask.dart';
+import '../core/models/task.dart';
+import '../core/utils.dart';
+import '../widgets/button.dart';
+import '../widgets/check_widget.dart';
+import '../widgets/page_title.dart';
+import '../widgets/svg_widget.dart';
+import '../widgets/txt_field.dart';
 
 class AddTaskPage extends StatefulWidget {
   const AddTaskPage({super.key});

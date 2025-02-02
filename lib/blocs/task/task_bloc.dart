@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tasks_test/core/utils.dart';
 
 import '../../core/db/hive.dart';
 import '../../core/models/task.dart';
@@ -40,6 +41,24 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
         if (task.id == event.task.id) task.done = !task.done;
       }
       await updateTasks();
+      emit(TaskLoaded(tasks: tasks));
+    });
+
+    on<SearchTasks>((event, emit) async {
+      logger('SEARCH TASK EVENT');
+      List<Task> searched = event.text.isEmpty
+          ? []
+          : tasks
+              .where((task) =>
+                  task.title.toLowerCase().contains(event.text.toLowerCase()))
+              .toList();
+      emit(TaskLoaded(
+        tasks: searched,
+        search: true,
+      ));
+    });
+
+    on<ExitSearch>((event, emit) async {
       emit(TaskLoaded(tasks: tasks));
     });
   }

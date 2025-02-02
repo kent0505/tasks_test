@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../core/config/app_colors.dart';
-import '../../core/utils.dart';
-import '../../blocs/navbar/navbar_bloc.dart';
-import '../../core/widgets/button.dart';
-import '../../core/widgets/svg_widget.dart';
-import '../settings/settings_page.dart';
-import '../task/add_task_page.dart';
+import '../core/config/app_colors.dart';
+import '../core/utils.dart';
+import '../blocs/navbar/navbar_bloc.dart';
+import '../widgets/button.dart';
+import '../widgets/svg_widget.dart';
+import 'settings_page.dart';
+import 'add_task_page.dart';
 import 'tasks_page.dart';
 
 class HomePage extends StatelessWidget {

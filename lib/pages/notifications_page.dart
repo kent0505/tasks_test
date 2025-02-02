@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../core/config/app_colors.dart';
-import '../../core/widgets/button.dart';
-import '../../core/widgets/page_title.dart';
+import '../core/config/app_colors.dart';
+import '../widgets/button.dart';
+import '../widgets/page_title.dart';
 
 class NotificationsPage extends StatelessWidget {
   const NotificationsPage({super.key});

@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../config/app_colors.dart';
-import '../config/themes.dart';
-import '../utils.dart';
+import '../blocs/task/task_bloc.dart';
+import '../core/config/app_colors.dart';
+import '../core/config/themes.dart';
+import '../core/utils.dart';
 import 'button.dart';
 import 'svg_widget.dart';
 
@@ -16,7 +18,7 @@ class TxtField extends StatefulWidget {
     this.number = false,
     this.datePicker = false,
     this.timePicker = false,
-    this.prefix = false,
+    this.search = false,
     this.length = 20,
     required this.onChanged,
   });
@@ -26,7 +28,7 @@ class TxtField extends StatefulWidget {
   final bool number;
   final bool datePicker;
   final bool timePicker;
-  final bool prefix;
+  final bool search;
   final int length;
   final void Function() onChanged;
 
@@ -49,7 +51,7 @@ class _TxtFieldState extends State<TxtField> {
   }
 
   Widget? _buildPrefixIcon() {
-    return widget.prefix
+    return widget.search
         ? const Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [SvgWidget('assets/search.svg')],
@@ -120,6 +122,9 @@ class _TxtFieldState extends State<TxtField> {
           widget.onChanged();
         },
         onTap: () async {
+          if (widget.search) {
+            context.read<TaskBloc>().add(SearchTasks());
+          }
           if (widget.datePicker) {
             // await showCupertinoModalPopup(
             //   context: context,

@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
-import '../../core/config/app_colors.dart';
-import '../../core/widgets/page_title.dart';
+import '../core/config/app_colors.dart';
+import '../widgets/page_title.dart';
 
-class TermsPage extends StatelessWidget {
-  const TermsPage({super.key});
+class PrivacyPage extends StatelessWidget {
+  const PrivacyPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
-          const PageTitle(title: 'Terms of Use'),
+          const PageTitle(title: 'Privacy Policy'),
           Expanded(
             child: ListView(
               padding: const EdgeInsets.symmetric(

@@ -29,8 +29,10 @@ class DeleteTask extends TaskEvent {
   final Task task;
 }
 
-class FilterTasks extends TaskEvent {
-  FilterTasks({required this.text});
+class SearchTasks extends TaskEvent {
+  SearchTasks({this.text = ''});
 
   final String text;
 }
+
+class ExitSearch extends TaskEvent {}

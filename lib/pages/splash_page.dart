@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../blocs/bloc/task_bloc.dart';
-import '../../core/widgets/loading_widget.dart';
-import '../home/home_page.dart';
+import '../blocs/task/task_bloc.dart';
+import '../widgets/loading_widget.dart';
+import 'home_page.dart';
 
 class SplashPage extends StatelessWidget {
   const SplashPage({super.key});
