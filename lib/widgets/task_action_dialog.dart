@@ -6,6 +6,7 @@ import '../core/app_colors.dart';
 import '../models/task.dart';
 import '../pages/edit_task_page.dart';
 import 'button.dart';
+import 'main_dialog.dart';
 
 class TaskActionDialog extends StatelessWidget {
   const TaskActionDialog({super.key, required this.task});
@@ -79,8 +80,25 @@ class TaskActionDialog extends StatelessWidget {
                     height: 56,
                     child: Button(
                       onPressed: () {
-                        context.read<TaskBloc>().add(DeleteTask(task: task));
-                        Navigator.pop(context);
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return MainDialog(
+                              title: 'Clear data',
+                              content:
+                                  'Are you sure? All saved data will be cleared. Please, confirm your action.',
+                              buttonTitle1: 'Clear Data',
+                              buttonTitle2: 'Cancel',
+                              onPressed1: () {
+                                context
+                                    .read<TaskBloc>()
+                                    .add(DeleteTask(task: task));
+                                Navigator.pop(context);
+                              },
+                              onPressed2: () {},
+                            );
+                          },
+                        );
                       },
                       child: const Center(
                         child: Text(

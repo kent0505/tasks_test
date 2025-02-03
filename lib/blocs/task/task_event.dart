@@ -42,3 +42,5 @@ class CreateCat extends TaskEvent {
 
   final Cat cat;
 }
+
+class ClearData extends TaskEvent {}

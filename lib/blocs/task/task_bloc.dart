@@ -76,5 +76,12 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       await updateTasks();
       emit(TaskLoaded(tasks: tasks));
     });
+
+    on<ClearData>((event, emit) async {
+      tasks = [];
+      cats = defaultCategories;
+      await updateTasks();
+      emit(TaskLoaded(tasks: tasks));
+    });
   }
 }

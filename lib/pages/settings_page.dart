@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../blocs/task/task_bloc.dart';
 import '../core/app_colors.dart';
 import '../widgets/button.dart';
+import '../widgets/main_dialog.dart';
 import '../widgets/page_title.dart';
 import '../widgets/svg_widget.dart';
 import 'notifications_page.dart';
@@ -80,7 +83,24 @@ class SettingsPage extends StatelessWidget {
               _SettingsTile(
                 id: 5,
                 title: 'Clear Data',
-                onPressed: () {},
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return MainDialog(
+                        title: 'Clear data',
+                        content:
+                            'Are you sure? All saved data will be cleared. Please, confirm your action.',
+                        buttonTitle1: 'Clear Data',
+                        buttonTitle2: 'Cancel',
+                        onPressed1: () {
+                          context.read<TaskBloc>().add(ClearData());
+                        },
+                        onPressed2: () {},
+                      );
+                    },
+                  );
+                },
               ),
             ],
           ),
