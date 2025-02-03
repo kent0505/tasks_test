@@ -34,6 +34,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
     setState(() {
       active = [
             controller1,
+            controller2,
             controller3,
             controller4,
           ].every((controller) => controller.text.isNotEmpty) &&

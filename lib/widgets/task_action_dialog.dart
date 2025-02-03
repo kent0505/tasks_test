@@ -84,18 +84,18 @@ class TaskActionDialog extends StatelessWidget {
                           context: context,
                           builder: (context) {
                             return MainDialog(
-                              title: 'Clear data',
+                              title: 'Delete task',
                               content:
-                                  'Are you sure? All saved data will be cleared. Please, confirm your action.',
-                              buttonTitle1: 'Clear Data',
-                              buttonTitle2: 'Cancel',
-                              onPressed1: () {
+                                  'Do you really want to remove this task? You won’t be able to recover it.',
+                              buttonTitle1: 'Cancel',
+                              buttonTitle2: 'Delete',
+                              onPressed1: () {},
+                              onPressed2: () {
                                 context
                                     .read<TaskBloc>()
                                     .add(DeleteTask(task: task));
                                 Navigator.pop(context);
                               },
-                              onPressed2: () {},
                             );
                           },
                         );

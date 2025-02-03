@@ -33,6 +33,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
     setState(() {
       active = [
             controller1,
+            controller2,
             controller3,
             controller4,
           ].every((controller) => controller.text.isNotEmpty) &&

@@ -8,6 +8,7 @@ import '../core/app_colors.dart';
 import '../core/themes.dart';
 import '../core/utils.dart';
 import 'button.dart';
+import 'date_pick_dialog.dart';
 import 'svg_widget.dart';
 
 class TxtField extends StatefulWidget {
@@ -37,14 +38,8 @@ class TxtField extends StatefulWidget {
 }
 
 class _TxtFieldState extends State<TxtField> {
+  DateTime date = DateTime.now();
   DateTime time = DateTime.now();
-
-  void onSave() {
-    setState(() {
-      widget.controller.text = timeToString(time);
-    });
-    widget.onChanged();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -116,12 +111,34 @@ class _TxtFieldState extends State<TxtField> {
             context.read<TaskBloc>().add(SearchTasks());
           }
 
+          if (widget.datePicker) {
+            showDialog<DateTime>(
+              context: context,
+              builder: (context) {
+                return DatePickDialog(date: date);
+              },
+            ).then((value) {
+              if (value != null) {
+                setState(() {
+                  date = value;
+                  widget.controller.text = dateToString(date);
+                  widget.onChanged();
+                });
+              }
+            });
+          }
+
           if (widget.timePicker) {
             await showCupertinoModalPopup(
               context: context,
               builder: (context) {
                 return _Picker(
-                  onSave: onSave,
+                  onSave: () {
+                    setState(() {
+                      widget.controller.text = timeToString(time);
+                      widget.onChanged();
+                    });
+                  },
                   child: CupertinoDatePicker(
                     onDateTimeChanged: (value) {
                       time = value;
