@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../blocs/task/task_bloc.dart';
 import '../core/config/app_colors.dart';
 import '../core/models/cat.dart';
-import '../core/utils.dart';
 import 'button.dart';
 import 'svg_widget.dart';
 
@@ -64,7 +63,7 @@ class _CreateDialog extends StatefulWidget {
 
 class _CreateDialogState extends State<_CreateDialog> {
   final controller = TextEditingController();
-  int current = 0;
+  int id = 0;
 
   @override
   void dispose() {
@@ -75,10 +74,12 @@ class _CreateDialogState extends State<_CreateDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
+      insetPadding: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(40),
       ),
       child: Container(
+        width: 356,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: AppColors.tertiary1,
@@ -174,17 +175,17 @@ class _CreateDialogState extends State<_CreateDialog> {
             ),
             const SizedBox(height: 8),
             Wrap(
-              spacing: 8,
+              spacing: 12,
               runSpacing: 12,
               children: List.generate(
-                11,
+                15,
                 (index) {
                   return _Cat(
                     id: index + 1,
-                    current: current,
+                    current: id,
                     onPressed: (value) {
                       setState(() {
-                        current == value ? current = 0 : current = value;
+                        id == value ? id = 0 : id = value;
                       });
                     },
                   );
@@ -205,14 +206,13 @@ class _CreateDialogState extends State<_CreateDialog> {
                   title: 'Create',
                   titleColor: AppColors.main,
                   color: AppColors.accent,
-                  active: controller.text.isNotEmpty && current != 0,
+                  active: controller.text.isNotEmpty && id != 0,
                   onPressed: () {
                     context.read<TaskBloc>().add(
                           CreateCat(
                             cat: Cat(
-                              id: getTimestamp(),
+                              id: id,
                               title: controller.text,
-                              iconId: current,
                             ),
                           ),
                         );

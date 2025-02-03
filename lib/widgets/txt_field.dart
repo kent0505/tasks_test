@@ -46,32 +46,6 @@ class _TxtFieldState extends State<TxtField> {
     widget.onChanged();
   }
 
-  void onDateTimeChanged(DateTime value) {
-    time = value;
-  }
-
-  Widget? _buildPrefixIcon() {
-    return widget.search
-        ? const Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [SvgWidget('assets/search.svg')],
-          )
-        : null;
-  }
-
-  Widget? _buildSuffixIcon() {
-    return widget.datePicker || widget.timePicker
-        ? Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SvgWidget(
-                widget.datePicker ? 'assets/calendar.svg' : 'assets/clock.svg',
-              ),
-            ],
-          )
-        : null;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -96,8 +70,24 @@ class _TxtFieldState extends State<TxtField> {
           fontFamily: 'w700',
         ),
         decoration: InputDecoration(
-          prefixIcon: _buildPrefixIcon(),
-          suffixIcon: _buildSuffixIcon(),
+          prefixIcon: widget.search
+              ? const Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [SvgWidget('assets/search.svg')],
+                )
+              : null,
+          suffixIcon: widget.datePicker || widget.timePicker
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgWidget(
+                      widget.datePicker
+                          ? 'assets/calendar.svg'
+                          : 'assets/clock.svg',
+                    ),
+                  ],
+                )
+              : null,
           contentPadding: const EdgeInsets.symmetric(
             vertical: 0,
             horizontal: 16,
@@ -125,22 +115,6 @@ class _TxtFieldState extends State<TxtField> {
           if (widget.search) {
             context.read<TaskBloc>().add(SearchTasks());
           }
-          if (widget.datePicker) {
-            // await showCupertinoModalPopup(
-            //   context: context,
-            //   builder: (context) {
-            //     return _Picker(
-            //       child: CupertinoDatePicker(
-            //         onDateTimeChanged: onDateTimeChanged,
-            //         initialDateTime: stringToDate(widget.controller.text),
-            //         mode: CupertinoDatePickerMode.date,
-            //         minimumYear: 1950,
-            //         maximumYear: DateTime.now().year + 1,
-            //       ),
-            //     );
-            //   },
-            // );
-          }
 
           if (widget.timePicker) {
             await showCupertinoModalPopup(
@@ -149,7 +123,9 @@ class _TxtFieldState extends State<TxtField> {
                 return _Picker(
                   onSave: onSave,
                   child: CupertinoDatePicker(
-                    onDateTimeChanged: onDateTimeChanged,
+                    onDateTimeChanged: (value) {
+                      time = value;
+                    },
                     initialDateTime: time,
                     mode: CupertinoDatePickerMode.time,
                     use24hFormat: true,
@@ -177,12 +153,7 @@ class _Picker extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 252,
-      decoration: const BoxDecoration(
-        color: AppColors.tertiary1,
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(8),
-        ),
-      ),
+      color: AppColors.tertiary1,
       child: Column(
         children: [
           SizedBox(
@@ -229,7 +200,7 @@ class _Picker extends StatelessWidget {
                       style: TextStyle(
                         color: AppColors.accent,
                         fontSize: 17,
-                        fontFamily: 'w500',
+                        fontFamily: 'w700',
                       ),
                     ),
                   ),

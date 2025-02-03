@@ -14,7 +14,7 @@ class Task {
   // List subtasks;
 
   @HiveField(3)
-  Cat? cat;
+  Cat cat;
 
   @HiveField(4)
   String date;
@@ -35,7 +35,7 @@ class Task {
     required this.id,
     required this.title,
     // required this.subtasks,
-    this.cat,
+    required this.cat,
     required this.date,
     required this.startTime,
     required this.endTime,

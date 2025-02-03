@@ -109,9 +109,11 @@ class _SettingsTile extends StatelessWidget {
         height: 64,
         child: Row(
           children: [
-            const SizedBox(width: 16),
-            SvgWidget('assets/set/set$id.svg'),
-            const SizedBox(width: 10),
+            const SizedBox(width: 6),
+            SizedBox(
+              width: 44,
+              child: SvgWidget('assets/set/set$id.svg'),
+            ),
             Text(
               title,
               style: const TextStyle(

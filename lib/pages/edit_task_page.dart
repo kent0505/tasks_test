@@ -27,24 +27,24 @@ class _EditTaskPageState extends State<EditTaskPage> {
   final controller3 = TextEditingController();
   final controller4 = TextEditingController();
 
-  Cat? cat;
+  late Cat cat;
   bool remind = false;
   bool active = true;
 
   void onChanged() {
     setState(() {
       active = [
-        controller1,
-        controller3,
-        controller4,
-      ].every((controller) => controller.text.isNotEmpty);
+            controller1,
+            controller3,
+            controller4,
+          ].every((controller) => controller.text.isNotEmpty) &&
+          cat.id != 0;
     });
   }
 
   void onCat(Cat value) {
-    setState(() {
-      cat?.id == value.id ? cat = null : cat = value;
-    });
+    cat.id == value.id ? cat = Cat(id: 0, title: '') : cat = value;
+    onChanged();
   }
 
   void onRemind() {
@@ -107,9 +107,9 @@ class _EditTaskPageState extends State<EditTaskPage> {
             child: ListView(
               padding: const EdgeInsets.symmetric(
                 horizontal: 16,
-                vertical: 8,
               ).copyWith(bottom: 75),
               children: [
+                const SizedBox(height: 8),
                 const TitleText('Add a title for your task'),
                 const SizedBox(height: 8),
                 TxtField(
@@ -184,7 +184,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
                   active: remind,
                   onPressed: onRemind,
                 ),
-                const SizedBox(height: 83),
+                const SizedBox(height: 16),
               ],
             ),
           ),

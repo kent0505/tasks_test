@@ -55,10 +55,48 @@ class TaskDetailsPage extends StatelessWidget {
                     fontFamily: 'w500',
                   ),
                 ),
-                if (task.cat != null) ...[
-                  const SizedBox(height: 12),
-                  _Category(task: task),
-                ],
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    const Expanded(
+                      child: Text(
+                        'Selected category',
+                        style: TextStyle(
+                          color: AppColors.white,
+                          fontSize: 16,
+                          fontFamily: 'w700',
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: 36,
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                        color: AppColors.tertiary2,
+                        borderRadius: BorderRadius.circular(36),
+                        border: Border.all(
+                          width: 1.5,
+                          color: AppColors.accent,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SvgWidget('assets/cat/cat${task.cat.id}.svg'),
+                          const SizedBox(width: 4),
+                          Text(
+                            task.cat.title,
+                            style: const TextStyle(
+                              color: AppColors.white,
+                              fontSize: 16,
+                              fontFamily: 'w700',
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 12),
                 Row(
                   children: [
@@ -78,59 +116,6 @@ class TaskDetailsPage extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _Category extends StatelessWidget {
-  const _Category({required this.task});
-
-  final Task task;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        const Expanded(
-          child: Text(
-            'Selected category',
-            style: TextStyle(
-              color: AppColors.white,
-              fontSize: 16,
-              fontFamily: 'w700',
-            ),
-          ),
-        ),
-        Container(
-          height: 36,
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          decoration: BoxDecoration(
-            color: AppColors.tertiary2,
-            borderRadius: BorderRadius.circular(36),
-            border: Border.all(
-              width: 1.5,
-              color: AppColors.accent,
-            ),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SvgWidget(
-                'assets/cat/cat${task.cat?.iconId ?? 0}.svg',
-              ),
-              const SizedBox(width: 4),
-              Text(
-                task.cat?.title ?? '',
-                style: const TextStyle(
-                  color: AppColors.white,
-                  fontSize: 16,
-                  fontFamily: 'w700',
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
     );
   }
 }

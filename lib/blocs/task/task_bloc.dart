@@ -56,10 +56,11 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       logger('SEARCH TASK EVENT');
       List<Task> searched = event.text.isEmpty
           ? []
-          : tasks
-              .where((task) =>
-                  task.title.toLowerCase().contains(event.text.toLowerCase()))
-              .toList();
+          : tasks.where((task) {
+              return task.title
+                  .toLowerCase()
+                  .contains(event.text.toLowerCase());
+            }).toList();
       emit(TaskLoaded(
         tasks: searched,
         search: true,
@@ -72,6 +73,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
 
     on<CreateCat>((event, emit) async {
       cats.insert(0, event.cat);
+      await updateTasks();
       emit(TaskLoaded(tasks: tasks));
     });
   }

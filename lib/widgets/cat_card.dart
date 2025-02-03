@@ -14,7 +14,7 @@ class CatCard extends StatelessWidget {
   });
 
   final Cat cat;
-  final Cat? current;
+  final Cat current;
   final void Function(Cat) onPressed;
 
   @override
@@ -33,14 +33,13 @@ class CatCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(36),
           border: Border.all(
             width: 1.5,
-            color:
-                cat.id == current?.id ? AppColors.accent : Colors.transparent,
+            color: cat.id == current.id ? AppColors.accent : Colors.transparent,
           ),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SvgWidget('assets/cat/cat${cat.iconId}.svg'),
+            SvgWidget('assets/cat/cat${cat.id}.svg'),
             const SizedBox(width: 4),
             Text(
               cat.title,

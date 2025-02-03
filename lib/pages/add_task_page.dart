@@ -28,17 +28,18 @@ class _AddTaskPageState extends State<AddTaskPage> {
   final controller4 = TextEditingController();
 
   // List<Subtask> subtasks = [];
-  Cat? cat;
+  Cat cat = Cat(id: 0, title: '');
   bool remind = false;
   bool active = false;
 
   void onChanged() {
     setState(() {
       active = [
-        controller1,
-        controller3,
-        controller4,
-      ].every((controller) => controller.text.isNotEmpty);
+            controller1,
+            controller3,
+            controller4,
+          ].every((controller) => controller.text.isNotEmpty) &&
+          cat.id != 0;
     });
   }
 
@@ -66,10 +67,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
   //   });
   // }
 
-  void onCategory(Cat value) {
-    setState(() {
-      cat?.id == value.id ? cat = null : cat = value;
-    });
+  void onCat(Cat value) {
+    cat.id == value.id ? cat = Cat(id: 0, title: '') : cat = value;
+    onChanged();
   }
 
   void onRemind() {
@@ -121,9 +121,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
           child: ListView(
             padding: const EdgeInsets.symmetric(
               horizontal: 16,
-              vertical: 8,
             ).copyWith(bottom: 75),
             children: [
+              const SizedBox(height: 8),
               const TitleText('Add a title for your task'),
               const SizedBox(height: 8),
               TxtField(
@@ -157,7 +157,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                         return CatCard(
                           cat: cats[index],
                           current: cat,
-                          onPressed: onCategory,
+                          onPressed: onCat,
                         );
                       },
                     )..add(const CreateCatButton()),
@@ -202,7 +202,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                 active: remind,
                 onPressed: onRemind,
               ),
-              const SizedBox(height: 83),
+              const SizedBox(height: 16),
             ],
           ),
         ),
