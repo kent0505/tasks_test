@@ -6,7 +6,7 @@ import '../blocs/navbar/navbar_bloc.dart';
 import '../models/cat.dart';
 import '../models/task.dart';
 import '../core/utils.dart';
-import '../widgets/categories_widget.dart';
+import '../widgets/cats_widget.dart';
 import '../widgets/page_title.dart';
 import '../widgets/remind_button.dart';
 import '../widgets/title_text.dart';
@@ -144,7 +144,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
               const SizedBox(height: 16),
               const TitleText('Select a category for your task (optional)'),
               const SizedBox(height: 8),
-              CategoriesWidget(
+              CatsWidget(
                 cat: cat,
                 onPressed: onCat,
               ),

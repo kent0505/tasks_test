@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../blocs/navbar/navbar_bloc.dart';
 import '../blocs/task/task_bloc.dart';
 import '../core/app_colors.dart';
+import '../core/hive.dart';
 import '../widgets/button.dart';
+import '../widgets/cats_filter.dart';
 import '../widgets/no_data.dart';
 import '../widgets/svg_widget.dart';
 import '../widgets/task_card.dart';
@@ -14,35 +17,61 @@ class TasksPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        SizedBox(height: 8 + MediaQuery.of(context).viewPadding.top),
-        const _Search(),
-        const SizedBox(height: 16),
-        const _SearchedAmount(),
-        const SizedBox(height: 8),
-        Expanded(
-          child: BlocBuilder<TaskBloc, TaskState>(
-            builder: (context, state) {
-              if (state is TaskLoaded) {
-                if (state.tasks.isEmpty) return const NoData();
-
-                return ListView.builder(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
+    return BlocBuilder<TaskBloc, TaskState>(
+      builder: (context, state) {
+        if (state is TaskLoaded) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(height: 8 + MediaQuery.of(context).viewPadding.top),
+              const _Search(),
+              const SizedBox(height: 16),
+              if (state.search) ...[
+                const _SearchedAmount(),
+                const SizedBox(height: 8),
+              ] else ...[
+                const _TasksAmount(),
+                const SizedBox(height: 8),
+                SizedBox(
+                  height: 36,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.only(
+                      left: 16,
+                      right: 8,
+                    ),
+                    children: [
+                      const CatsFilter(title: 'All'),
+                      ...List.generate(
+                        cats.length,
+                        (index) {
+                          return CatsFilter(title: cats[index].title);
+                        },
+                      ),
+                    ],
                   ),
-                  itemCount: state.tasks.length,
-                  itemBuilder: (context, index) {
-                    return TaskCard(task: state.tasks[index]);
-                  },
-                );
-              }
-              return Container();
-            },
-          ),
-        ),
-      ],
+                ),
+                const SizedBox(height: 16),
+              ],
+              Expanded(
+                child: state.tasks.isEmpty
+                    ? const NoData()
+                    : ListView.builder(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                        ),
+                        itemCount: state.tasks.length,
+                        itemBuilder: (context, index) {
+                          return TaskCard(task: state.tasks[index]);
+                        },
+                      ),
+              ),
+            ],
+          );
+        }
+
+        return Container();
+      },
     );
   }
 }
@@ -146,6 +175,61 @@ class _SearchedAmount extends StatelessWidget {
 
         return Container();
       },
+    );
+  }
+}
+
+class _TasksAmount extends StatelessWidget {
+  const _TasksAmount();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        const SizedBox(width: 16),
+        const Text(
+          'My tasks',
+          style: TextStyle(
+            color: AppColors.white,
+            fontSize: 16,
+            fontFamily: 'w700',
+          ),
+        ),
+        const SizedBox(width: 8),
+        Container(
+          height: 24,
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          decoration: const BoxDecoration(
+            shape: BoxShape.circle,
+            color: AppColors.tertiary1,
+          ),
+          child: Center(
+            child: BlocBuilder<TaskBloc, TaskState>(
+              builder: (context, state) {
+                return Text(
+                  state is TaskLoaded ? state.tasks.length.toString() : '0',
+                  style: const TextStyle(
+                    color: AppColors.accent,
+                    fontSize: 12,
+                    fontFamily: 'w700',
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+        const Spacer(),
+        Button(
+          onPressed: () {
+            context.read<NavbarBloc>().add(ChangePage(index: 2));
+          },
+          child: const SvgWidget(
+            'assets/add.svg',
+            color: AppColors.white,
+          ),
+        ),
+        const SizedBox(width: 16),
+      ],
     );
   }
 }

@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../blocs/task/task_bloc.dart';
 import '../models/cat.dart';
 import '../models/task.dart';
-import '../widgets/categories_widget.dart';
+import '../widgets/cats_widget.dart';
 import '../widgets/page_title.dart';
 import '../widgets/remind_button.dart';
 import '../widgets/title_text.dart';
@@ -130,7 +130,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
                 const SizedBox(height: 16),
                 const TitleText('Select a cat for your task (optional)'),
                 const SizedBox(height: 8),
-                CategoriesWidget(
+                CatsWidget(
                   cat: cat,
                   onPressed: onCat,
                 ),

@@ -83,5 +83,15 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       await updateTasks();
       emit(TaskLoaded(tasks: tasks));
     });
+
+    on<FilterByCats>((event, emit) async {
+      List<Task> sorted = event.title == 'All'
+          ? tasks
+          : tasks.where((element) => element.cat.title == event.title).toList();
+      emit(TaskLoaded(
+        tasks: sorted,
+        filter: event.title,
+      ));
+    });
   }
 }

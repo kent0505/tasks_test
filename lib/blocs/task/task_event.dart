@@ -44,3 +44,9 @@ class CreateCat extends TaskEvent {
 }
 
 class ClearData extends TaskEvent {}
+
+class FilterByCats extends TaskEvent {
+  FilterByCats({required this.title});
+
+  final String title;
+}

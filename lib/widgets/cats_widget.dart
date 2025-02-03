@@ -10,8 +10,8 @@ import 'cat_card.dart';
 import 'create_category_dialog.dart';
 import 'svg_widget.dart';
 
-class CategoriesWidget extends StatelessWidget {
-  const CategoriesWidget({
+class CatsWidget extends StatelessWidget {
+  const CatsWidget({
     super.key,
     required this.cat,
     required this.onPressed,
