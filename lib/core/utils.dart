@@ -37,3 +37,41 @@ bool hasSameDate(List<Task> models, DateTime date) {
     return false;
   }
 }
+
+bool isToday(DateTime date) {
+  DateTime now = DateTime.now();
+  return date.day == now.day &&
+      date.month == now.month &&
+      date.year == now.year;
+}
+
+String getMonthYear(DateTime date) {
+  return DateFormat('MMMM yyyy').format(date);
+}
+
+DateTime getMondayOfWeek(DateTime date) {
+  return date.subtract(Duration(days: date.weekday - 1));
+}
+
+String getWeekRange(DateTime start) {
+  DateTime end = start.add(const Duration(days: 6));
+  return "${start.day} - ${end.day} ${getMonthName(start)}";
+}
+
+String getMonthName(DateTime date) {
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec"
+  ];
+  return months[date.month - 1];
+}

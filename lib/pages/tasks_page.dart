@@ -11,6 +11,7 @@ import '../widgets/no_data.dart';
 import '../widgets/svg_widget.dart';
 import '../widgets/task_card.dart';
 import '../widgets/txt_field.dart';
+import '../widgets/week_selector.dart';
 
 class TasksPage extends StatelessWidget {
   const TasksPage({super.key});
@@ -30,6 +31,8 @@ class TasksPage extends StatelessWidget {
                 const _SearchedAmount(),
                 const SizedBox(height: 8),
               ] else ...[
+                const WeekSelector(),
+                const SizedBox(height: 16),
                 const _TasksAmount(),
                 const SizedBox(height: 8),
                 SizedBox(

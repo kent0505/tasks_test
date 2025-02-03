@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../core/app_colors.dart';
 import '../core/hive.dart';
@@ -24,17 +23,6 @@ class _DatePickDialogState extends State<DatePickDialog> {
     setState(() {
       _current = DateTime(_current.year, _current.month + offset, 1);
     });
-  }
-
-  String getMonthYear(DateTime date) {
-    return DateFormat('MMMM yyyy').format(date);
-  }
-
-  bool isToday(DateTime date) {
-    DateTime now = DateTime.now();
-    return date.day == now.day &&
-        date.month == now.month &&
-        date.year == now.year;
   }
 
   List<DateTime> generateMonthDays(DateTime current) {
@@ -78,14 +66,13 @@ class _DatePickDialogState extends State<DatePickDialog> {
                   child: const SvgWidget('assets/back.svg'),
                 ),
                 Expanded(
-                  child: Center(
-                    child: Text(
-                      getMonthYear(_current),
-                      style: const TextStyle(
-                        color: AppColors.white,
-                        fontSize: 18,
-                        fontFamily: 'w700',
-                      ),
+                  child: Text(
+                    getMonthYear(_current),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: AppColors.white,
+                      fontSize: 18,
+                      fontFamily: 'w700',
                     ),
                   ),
                 ),
@@ -119,10 +106,8 @@ class _DatePickDialogState extends State<DatePickDialog> {
                     children: getWeek(_current, weekIndex).map((date) {
                       return _Day(
                         date: date,
-                        isSelected: date == _selectedDate,
-                        isToday: isToday(date),
-                        isCurrentMonth: date.month == _current.month,
-                        exist: hasSameDate(tasks, date),
+                        current: _current,
+                        selected: date == _selectedDate,
                         onPressed: () {
                           setState(() {
                             _selectedDate = date;
@@ -145,18 +130,14 @@ class _DatePickDialogState extends State<DatePickDialog> {
 class _Day extends StatelessWidget {
   const _Day({
     required this.date,
-    required this.isCurrentMonth,
-    required this.isToday,
-    required this.isSelected,
-    this.exist = false,
+    required this.current,
+    required this.selected,
     required this.onPressed,
   });
 
   final DateTime date;
-  final bool isCurrentMonth;
-  final bool isToday;
-  final bool isSelected;
-  final bool exist;
+  final DateTime current;
+  final bool selected;
   final VoidCallback onPressed;
 
   @override
@@ -174,18 +155,20 @@ class _Day extends StatelessWidget {
               width: 44,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: isToday && isCurrentMonth
-                    ? AppColors.accent
-                    : isSelected
-                        ? Colors.greenAccent.shade400
-                        : Colors.transparent,
+                color: selected ? AppColors.accent : Colors.transparent,
+                border: Border.all(
+                  width: 2,
+                  color: isToday(date) ? AppColors.accent : Colors.transparent,
+                ),
               ),
               child: Center(
                 child: Text(
                   date.day.toString(),
                   style: TextStyle(
-                    color: isCurrentMonth
-                        ? AppColors.white
+                    color: date.month == current.month
+                        ? selected
+                            ? AppColors.main
+                            : AppColors.white
                         : const Color(0xFF75799B),
                     fontSize: 16,
                     fontFamily: 'w700',
@@ -193,7 +176,7 @@ class _Day extends StatelessWidget {
                 ),
               ),
             ),
-            if (exist)
+            if (hasSameDate(tasks, date))
               Container(
                 height: 8,
                 width: 8,
