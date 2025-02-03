@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../core/config/app_colors.dart';
-import '../core/models/subtask.dart';
+import '../core/app_colors.dart';
+import '../models/subtask.dart';
 import 'button.dart';
 import 'check_widget.dart';
 import 'svg_widget.dart';

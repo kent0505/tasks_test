@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../core/config/app_colors.dart';
+import '../core/app_colors.dart';
 
 class TitleText extends StatelessWidget {
   const TitleText(this.title, {super.key});

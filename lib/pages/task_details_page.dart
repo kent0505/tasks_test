@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../core/config/app_colors.dart';
-import '../core/models/task.dart';
+import '../core/app_colors.dart';
+import '../models/task.dart';
 import '../widgets/page_title.dart';
 import '../widgets/svg_widget.dart';
 import 'edit_task_page.dart';

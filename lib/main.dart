@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'blocs/task/task_bloc.dart';
 import 'blocs/navbar/navbar_bloc.dart';
-import 'core/config/themes.dart';
+import 'core/themes.dart';
 import 'pages/splash_page.dart';
 
 void main() {

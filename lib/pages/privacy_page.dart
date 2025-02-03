@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../core/config/app_colors.dart';
+import '../core/app_colors.dart';
 import '../widgets/page_title.dart';
 
 class PrivacyPage extends StatelessWidget {

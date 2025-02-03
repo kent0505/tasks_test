@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../blocs/task/task_bloc.dart';
-import '../core/config/app_colors.dart';
+import '../core/app_colors.dart';
 import '../widgets/button.dart';
 import '../widgets/no_data.dart';
 import '../widgets/svg_widget.dart';

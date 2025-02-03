@@ -3,65 +3,19 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../blocs/task/task_bloc.dart';
-import '../core/config/app_colors.dart';
-import '../core/models/cat.dart';
+import '../core/app_colors.dart';
+import '../models/cat.dart';
 import 'button.dart';
 import 'svg_widget.dart';
 
-class CreateCatButton extends StatelessWidget {
-  const CreateCatButton({super.key});
+class CreateCategoryDialog extends StatefulWidget {
+  const CreateCategoryDialog({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Button(
-      onPressed: () {
-        showDialog(
-          context: context,
-          builder: (context) {
-            return const _CreateDialog();
-          },
-        );
-      },
-      minSize: 36,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        height: 36,
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        decoration: BoxDecoration(
-          color: AppColors.tertiary2,
-          borderRadius: BorderRadius.circular(36),
-        ),
-        child: const Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SvgWidget(
-              'assets/add.svg',
-              color: AppColors.white,
-            ),
-            SizedBox(width: 4),
-            Text(
-              'Create New',
-              style: TextStyle(
-                color: AppColors.white,
-                fontSize: 16,
-                fontFamily: 'w700',
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  State<CreateCategoryDialog> createState() => CreateCategoryDialogState();
 }
 
-class _CreateDialog extends StatefulWidget {
-  const _CreateDialog();
-
-  @override
-  State<_CreateDialog> createState() => _CreateDialogState();
-}
-
-class _CreateDialogState extends State<_CreateDialog> {
+class CreateCategoryDialogState extends State<CreateCategoryDialog> {
   final controller = TextEditingController();
   int id = 0;
 
@@ -111,68 +65,16 @@ class _CreateDialogState extends State<_CreateDialog> {
               ],
             ),
             const SizedBox(height: 12),
-            const Text(
-              'Add a title for your category',
-              style: TextStyle(
-                color: AppColors.white,
-                fontSize: 16,
-                fontFamily: 'w700',
-              ),
-            ),
+            const _Title('Add a title for your category'),
             const SizedBox(height: 8),
-            Container(
-              height: 52,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: AppColors.tertiary2,
-                borderRadius: BorderRadius.circular(52),
-              ),
-              child: TextField(
-                controller: controller,
-                inputFormatters: [
-                  LengthLimitingTextInputFormatter(30),
-                ],
-                textCapitalization: TextCapitalization.sentences,
-                style: const TextStyle(
-                  color: AppColors.white,
-                  fontSize: 16,
-                  fontFamily: 'w700',
-                ),
-                decoration: const InputDecoration(
-                  contentPadding: EdgeInsets.symmetric(
-                    vertical: 0,
-                    horizontal: 16,
-                  ),
-                  hintText: 'Title',
-                  hintStyle: TextStyle(
-                    color: AppColors.text1,
-                    fontSize: 14,
-                    fontFamily: 'w500',
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.transparent),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.transparent),
-                  ),
-                ),
-                onTapOutside: (event) {
-                  FocusManager.instance.primaryFocus?.unfocus();
-                },
-                onChanged: (value) {
-                  setState(() {});
-                },
-              ),
+            _Field(
+              controller: controller,
+              onChanged: () {
+                setState(() {});
+              },
             ),
             const SizedBox(height: 12),
-            const Text(
-              'Select icon for category ',
-              style: TextStyle(
-                color: AppColors.white,
-                fontSize: 16,
-                fontFamily: 'w700',
-              ),
-            ),
+            const _Title('Select icon for category'),
             const SizedBox(height: 8),
             Wrap(
               spacing: 12,
@@ -223,6 +125,82 @@ class _CreateDialogState extends State<_CreateDialog> {
             )
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _Title extends StatelessWidget {
+  const _Title(this.title);
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      title,
+      style: const TextStyle(
+        color: AppColors.white,
+        fontSize: 16,
+        fontFamily: 'w700',
+      ),
+    );
+  }
+}
+
+class _Field extends StatelessWidget {
+  const _Field({
+    required this.controller,
+    required this.onChanged,
+  });
+
+  final TextEditingController controller;
+  final VoidCallback onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 52,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: AppColors.tertiary2,
+        borderRadius: BorderRadius.circular(52),
+      ),
+      child: TextField(
+        controller: controller,
+        inputFormatters: [
+          LengthLimitingTextInputFormatter(30),
+        ],
+        textCapitalization: TextCapitalization.sentences,
+        style: const TextStyle(
+          color: AppColors.white,
+          fontSize: 16,
+          fontFamily: 'w700',
+        ),
+        decoration: const InputDecoration(
+          contentPadding: EdgeInsets.symmetric(
+            vertical: 0,
+            horizontal: 16,
+          ),
+          hintText: 'Title',
+          hintStyle: TextStyle(
+            color: AppColors.text1,
+            fontSize: 14,
+            fontFamily: 'w500',
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.transparent),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.transparent),
+          ),
+        ),
+        onTapOutside: (event) {
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
+        onChanged: (value) {
+          onChanged();
+        },
       ),
     );
   }

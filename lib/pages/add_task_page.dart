@@ -3,12 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../blocs/task/task_bloc.dart';
 import '../blocs/navbar/navbar_bloc.dart';
-import '../core/db/hive.dart';
-import '../core/models/cat.dart';
-import '../core/models/task.dart';
+import '../models/cat.dart';
+import '../models/task.dart';
 import '../core/utils.dart';
-import '../widgets/cat_card.dart';
-import '../widgets/create_cat_button.dart';
+import '../widgets/categories_widget.dart';
 import '../widgets/page_title.dart';
 import '../widgets/remind_button.dart';
 import '../widgets/title_text.dart';
@@ -146,23 +144,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
               const SizedBox(height: 16),
               const TitleText('Select a category for your task (optional)'),
               const SizedBox(height: 8),
-              BlocBuilder<TaskBloc, TaskState>(
-                builder: (context, state) {
-                  return Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: List.generate(
-                      cats.length,
-                      (index) {
-                        return CatCard(
-                          cat: cats[index],
-                          current: cat,
-                          onPressed: onCat,
-                        );
-                      },
-                    )..add(const CreateCatButton()),
-                  );
-                },
+              CategoriesWidget(
+                cat: cat,
+                onPressed: onCat,
               ),
               const SizedBox(height: 16),
               const TitleText('Set a date for your task'),

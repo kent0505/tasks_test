@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../core/db/hive.dart';
-import '../../core/models/cat.dart';
-import '../../core/models/task.dart';
+import '../../core/hive.dart';
+import '../../models/cat.dart';
+import '../../models/task.dart';
 import '../../core/utils.dart';
 
 part 'task_event.dart';
