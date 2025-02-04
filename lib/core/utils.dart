@@ -1,21 +1,17 @@
 import 'dart:developer' as developer;
 
 import 'package:intl/intl.dart';
-import 'package:tasks_test/models/task.dart';
+
+import '../models/task.dart';
 
 int getTimestamp() => DateTime.now().millisecondsSinceEpoch ~/ 1000;
 
-String timestampToString(int timestamp) {
-  DateTime date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
-  return DateFormat('dd.MM.yyyy').format(date); // timestamp to 22.06.2000
-}
-
 String dateToString(DateTime date) {
-  return DateFormat('dd.MM.yyyy').format(date); // DateTime to 22.06.2000
+  return DateFormat('dd.MM.yyyy').format(date);
 }
 
 String timeToString(DateTime time) {
-  return DateFormat('HH:mm a').format(time); // DateTime to 22:00
+  return DateFormat('HH:mm a').format(time);
 }
 
 void logger(Object message) => developer.log(message.toString());
@@ -51,27 +47,4 @@ String getMonthYear(DateTime date) {
 
 DateTime getMondayOfWeek(DateTime date) {
   return date.subtract(Duration(days: date.weekday - 1));
-}
-
-String getWeekRange(DateTime start) {
-  DateTime end = start.add(const Duration(days: 6));
-  return "${start.day} - ${end.day} ${getMonthName(start)}";
-}
-
-String getMonthName(DateTime date) {
-  const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec"
-  ];
-  return months[date.month - 1];
 }
