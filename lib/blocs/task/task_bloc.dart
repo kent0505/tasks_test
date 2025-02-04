@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../core/hive.dart';
+import '../../core/prefs.dart';
 import '../../models/cat.dart';
 import '../../models/subtask.dart';
 import '../../models/task.dart';
@@ -14,13 +15,9 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   TaskBloc() : super(TaskInitial()) {
     on<GetTask>((event, emit) async {
       await getTasks();
+      await getPrefs();
       await cancelAllNotifications();
-      for (Task task in tasks) {
-        if (task.remind) {
-          final date = stringToDate(task.date);
-          await scheduleNotification(1, date.day, date.hour, date.minute);
-        }
-      }
+      await setScheduledNotifs();
       await Future.delayed(const Duration(seconds: 2));
       emit(TaskLoaded(tasks: tasks));
     });
@@ -28,6 +25,8 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     on<AddTask>((event, emit) async {
       tasks.insert(0, event.task);
       await updateTasks();
+      await cancelAllNotifications();
+      await setScheduledNotifs();
       emit(TaskLoaded(tasks: tasks));
     });
 
@@ -44,12 +43,16 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
         }
       }
       await updateTasks();
+      await cancelAllNotifications();
+      await setScheduledNotifs();
       emit(TaskLoaded(tasks: tasks));
     });
 
     on<DeleteTask>((event, emit) async {
       tasks.removeWhere((task) => task.id == event.task.id);
       await updateTasks();
+      await cancelAllNotifications();
+      await setScheduledNotifs();
       emit(TaskLoaded(tasks: tasks));
     });
 
@@ -104,6 +107,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       tasks = [];
       cats = defaultCategories;
       await updateTasks();
+      await cancelAllNotifications();
       emit(TaskLoaded(tasks: tasks));
     });
 
@@ -115,6 +119,13 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
         tasks: sorted,
         filter: event.title,
       ));
+    });
+
+    on<SetNotifications>((event, emit) async {
+      await saveInt(event.minute);
+      await cancelAllNotifications();
+      if (notifyMinute != 100) await setScheduledNotifs();
+      emit(TaskLoaded(tasks: tasks));
     });
   }
 }

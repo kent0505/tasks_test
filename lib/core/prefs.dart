@@ -1,27 +1,14 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
+int notifyMinute = 100;
+
 Future<void> getPrefs() async {
-  // final prefs = await SharedPreferences.getInstance();
-  // await prefs.clear();
-  // onboard = prefs.getBool('onboard') ?? true;
+  final prefs = await SharedPreferences.getInstance();
+  notifyMinute = prefs.getInt('notifyMinute') ?? 100;
 }
 
-Future<void> saveBool(String key, bool value) async {
+Future<void> saveInt(int value) async {
   final prefs = await SharedPreferences.getInstance();
-  prefs.setBool(key, value);
-}
-
-Future<void> saveString(String key, String value) async {
-  final prefs = await SharedPreferences.getInstance();
-  prefs.setString(key, value);
-}
-
-Future<void> saveInt(String key, int value) async {
-  final prefs = await SharedPreferences.getInstance();
-  prefs.setInt(key, value);
-}
-
-Future<void> saveStringList(String key, List<String> value) async {
-  final prefs = await SharedPreferences.getInstance();
-  prefs.setStringList(key, value);
+  notifyMinute = value;
+  await prefs.setInt('notifyMinute', notifyMinute);
 }

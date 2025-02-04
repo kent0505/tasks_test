@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../blocs/task/task_bloc.dart';
 import '../core/app_colors.dart';
+import '../core/utils.dart';
 import '../widgets/button.dart';
 import '../widgets/main_dialog.dart';
 import '../widgets/page_title.dart';
@@ -78,8 +79,8 @@ class SettingsPage extends StatelessWidget {
                 id: 4,
                 title: 'Rate Us',
                 onPressed: () {
-                  // showNotification('Title', 'Body');
-                  // scheduleNotification(1, 4, 8, 40);
+                  showNotification('Title', 'Body');
+                  // scheduleNotification(1, 4, 8, 44);
                 },
               ),
               const _Divider(),

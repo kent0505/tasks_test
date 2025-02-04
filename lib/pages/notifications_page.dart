@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tasks_test/core/utils.dart';
 
+import '../blocs/task/task_bloc.dart';
 import '../core/app_colors.dart';
+import '../core/prefs.dart';
 import '../widgets/button.dart';
 import '../widgets/page_title.dart';
+import '../widgets/svg_widget.dart';
 
 class NotificationsPage extends StatelessWidget {
   const NotificationsPage({super.key});
@@ -19,8 +24,8 @@ class NotificationsPage extends StatelessWidget {
                 vertical: 8,
                 horizontal: 16,
               ),
-              children: [
-                const Text(
+              children: const [
+                Text(
                   'Pick a time to receive a task notification. You can modify this setting in Settings later.',
                   style: TextStyle(
                     color: AppColors.text1,
@@ -28,34 +33,34 @@ class NotificationsPage extends StatelessWidget {
                     fontFamily: 'w500',
                   ),
                 ),
-                const SizedBox(height: 27),
+                SizedBox(height: 27),
                 _Tile(
                   title: 'None',
-                  onPressed: () {},
+                  minute: 100,
                 ),
                 _Tile(
                   title: 'At the same time',
-                  onPressed: () {},
+                  minute: 0,
                 ),
                 _Tile(
                   title: '5 minutes before',
-                  onPressed: () {},
+                  minute: 5,
                 ),
                 _Tile(
                   title: '10 minutes before',
-                  onPressed: () {},
+                  minute: 10,
                 ),
                 _Tile(
                   title: '15 minutes before',
-                  onPressed: () {},
+                  minute: 15,
                 ),
                 _Tile(
                   title: '30 minutes before',
-                  onPressed: () {},
+                  minute: 30,
                 ),
                 _Tile(
                   title: '1 hour before',
-                  onPressed: () {},
+                  minute: 60,
                 ),
               ],
             ),
@@ -69,11 +74,11 @@ class NotificationsPage extends StatelessWidget {
 class _Tile extends StatelessWidget {
   const _Tile({
     required this.title,
-    required this.onPressed,
+    required this.minute,
   });
 
   final String title;
-  final VoidCallback onPressed;
+  final int minute;
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +90,10 @@ class _Tile extends StatelessWidget {
         borderRadius: BorderRadius.circular(52),
       ),
       child: Button(
-        onPressed: onPressed,
+        onPressed: () async {
+          context.read<TaskBloc>().add(SetNotifications(minute: minute));
+          logger(minute == notifyMinute);
+        },
         child: Row(
           children: [
             const SizedBox(width: 16),
@@ -98,16 +106,30 @@ class _Tile extends StatelessWidget {
               ),
             ),
             const Spacer(),
-            Container(
-              height: 24,
-              width: 24,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  width: 2,
-                  color: AppColors.tertiary2,
-                ),
-              ),
+            BlocBuilder<TaskBloc, TaskState>(
+              builder: (context, state) {
+                return Container(
+                  height: 24,
+                  width: 24,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: minute == notifyMinute
+                        ? AppColors.accent
+                        : Colors.transparent,
+                    border: Border.all(
+                      width: 2,
+                      color: minute == notifyMinute
+                          ? AppColors.accent
+                          : AppColors.tertiary2,
+                    ),
+                  ),
+                  child: minute == notifyMinute
+                      ? const Center(
+                          child: SvgWidget('assets/check.svg'),
+                        )
+                      : null,
+                );
+              },
             ),
             const SizedBox(width: 28),
           ],

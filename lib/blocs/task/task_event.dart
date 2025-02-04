@@ -52,3 +52,9 @@ class FilterByCats extends TaskEvent {
   FilterByCats({required this.title});
   final String title;
 }
+
+class SetNotifications extends TaskEvent {
+  SetNotifications({required this.minute});
+
+  final int minute;
+}

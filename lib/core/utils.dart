@@ -7,6 +7,8 @@ import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:intl/intl.dart';
 
 import '../models/task.dart';
+import 'hive.dart';
+import 'prefs.dart';
 
 int getTimestamp() => DateTime.now().millisecondsSinceEpoch ~/ 1000;
 
@@ -91,12 +93,16 @@ NotificationDetails notificationDetails() {
 }
 
 Future<void> showNotification(String title, String body) async {
-  return notificationPlugin.show(
-    0,
-    title,
-    body,
-    notificationDetails(),
-  );
+  try {
+    return notificationPlugin.show(
+      0,
+      title,
+      body,
+      notificationDetails(),
+    );
+  } catch (e) {
+    logger(e);
+  }
 }
 
 Future<void> scheduleNotification(
@@ -117,7 +123,7 @@ Future<void> scheduleNotification(
     minute,
   );
   logger(date);
-  await notificationPlugin.zonedSchedule(
+  return notificationPlugin.zonedSchedule(
     id,
     '!!!',
     'Don’t forget your task',
@@ -127,9 +133,22 @@ Future<void> scheduleNotification(
         UILocalNotificationDateInterpretation.absoluteTime,
     androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
   );
-  logger('Notification Scheduled');
 }
 
 Future<void> cancelAllNotifications() async {
   await notificationPlugin.cancelAll();
+}
+
+Future<void> setScheduledNotifs() async {
+  for (Task task in tasks) {
+    if (task.remind) {
+      final date = stringToDate(task.date);
+      await scheduleNotification(
+        1,
+        date.day,
+        date.hour,
+        date.minute - notifyMinute,
+      );
+    }
+  }
 }
