@@ -78,9 +78,10 @@ class SettingsPage extends StatelessWidget {
               _SettingsTile(
                 id: 4,
                 title: 'Rate Us',
-                onPressed: () {
-                  showNotification('Title', 'Body');
-                  // scheduleNotification(1, 4, 8, 44);
+                onPressed: () async {
+                  // await showNotification('Title', 'Body');
+                  // await notificationPlugin.cancelAll();
+                  await scheduleNotification(1, 4, 10, 2);
                 },
               ),
               const _Divider(),

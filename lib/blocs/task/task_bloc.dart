@@ -16,7 +16,6 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     on<GetTask>((event, emit) async {
       await getTasks();
       await getPrefs();
-      await cancelAllNotifications();
       await setScheduledNotifs();
       await Future.delayed(const Duration(seconds: 2));
       emit(TaskLoaded(tasks: tasks));
@@ -25,7 +24,6 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     on<AddTask>((event, emit) async {
       tasks.insert(0, event.task);
       await updateTasks();
-      await cancelAllNotifications();
       await setScheduledNotifs();
       emit(TaskLoaded(tasks: tasks));
     });
@@ -43,7 +41,6 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
         }
       }
       await updateTasks();
-      await cancelAllNotifications();
       await setScheduledNotifs();
       emit(TaskLoaded(tasks: tasks));
     });
@@ -51,7 +48,6 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     on<DeleteTask>((event, emit) async {
       tasks.removeWhere((task) => task.id == event.task.id);
       await updateTasks();
-      await cancelAllNotifications();
       await setScheduledNotifs();
       emit(TaskLoaded(tasks: tasks));
     });
@@ -107,7 +103,6 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       tasks = [];
       cats = defaultCategories;
       await updateTasks();
-      await cancelAllNotifications();
       emit(TaskLoaded(tasks: tasks));
     });
 
@@ -123,7 +118,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
 
     on<SetNotifications>((event, emit) async {
       await saveInt(event.minute);
-      await cancelAllNotifications();
+      await notificationPlugin.cancelAll();
       if (notifyMinute != 100) await setScheduledNotifs();
       emit(TaskLoaded(tasks: tasks));
     });

@@ -2,7 +2,7 @@ import 'dart:developer' as developer;
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
-import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:intl/intl.dart';
 
@@ -93,16 +93,12 @@ NotificationDetails notificationDetails() {
 }
 
 Future<void> showNotification(String title, String body) async {
-  try {
-    return notificationPlugin.show(
-      0,
-      title,
-      body,
-      notificationDetails(),
-    );
-  } catch (e) {
-    logger(e);
-  }
+  await notificationPlugin.show(
+    0,
+    title,
+    body,
+    notificationDetails(),
+  );
 }
 
 Future<void> scheduleNotification(
@@ -111,35 +107,29 @@ Future<void> scheduleNotification(
   int hour,
   int minute,
 ) async {
-  final String currentTimezone = await FlutterTimezone.getLocalTimezone();
-  logger(currentTimezone);
   final now = tz.TZDateTime.now(tz.local);
-  final date = tz.TZDateTime(
-    tz.local,
-    now.year,
-    now.month,
-    day,
-    hour,
-    minute,
-  );
-  logger(date);
-  return notificationPlugin.zonedSchedule(
-    id,
+  final date = tz.TZDateTime(tz.local, now.year, now.month, day, hour, minute);
+  await notificationPlugin.zonedSchedule(
+    0,
     '!!!',
     'Don’t forget your task',
     date,
-    notificationDetails(),
+    const NotificationDetails(
+      android: AndroidNotificationDetails(
+        'your channel id',
+        'your channel name',
+        channelDescription: 'your channel description',
+      ),
+    ),
+    androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
     uiLocalNotificationDateInterpretation:
         UILocalNotificationDateInterpretation.absoluteTime,
-    androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+    matchDateTimeComponents: DateTimeComponents.time,
   );
 }
 
-Future<void> cancelAllNotifications() async {
-  await notificationPlugin.cancelAll();
-}
-
 Future<void> setScheduledNotifs() async {
+  await notificationPlugin.cancelAll();
   for (Task task in tasks) {
     if (task.remind) {
       final date = stringToDate(task.date);
