@@ -28,7 +28,8 @@ DateTime stringToDate(String date) {
 
 DateTime timeToDate(String time) {
   try {
-    return DateFormat('HH:mm a').parseStrict(time);
+    DateFormat format = DateFormat('HH:mm');
+    return format.parseStrict(time.replaceAll(' AM', '').replaceAll(' PM', ''));
   } catch (e) {
     return DateTime.now();
   }
