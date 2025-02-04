@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tasks_test/core/utils.dart';
 
 import '../blocs/task/task_bloc.dart';
 import '../core/app_colors.dart';
@@ -92,7 +91,6 @@ class _Tile extends StatelessWidget {
       child: Button(
         onPressed: () async {
           context.read<TaskBloc>().add(SetNotifications(minute: minute));
-          logger(minute == notifyMinute);
         },
         child: Row(
           children: [

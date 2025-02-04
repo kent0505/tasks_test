@@ -7,8 +7,6 @@ import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:intl/intl.dart';
 
 import '../models/task.dart';
-import 'hive.dart';
-import 'prefs.dart';
 
 int getTimestamp() => DateTime.now().millisecondsSinceEpoch ~/ 1000;
 
@@ -23,6 +21,14 @@ String timeToString(DateTime time) {
 DateTime stringToDate(String date) {
   try {
     return DateFormat('dd.MM.yyyy').parseStrict(date);
+  } catch (e) {
+    return DateTime.now();
+  }
+}
+
+DateTime timeToDate(String time) {
+  try {
+    return DateFormat('HH:mm a').parseStrict(time);
   } catch (e) {
     return DateTime.now();
   }
@@ -102,43 +108,33 @@ Future<void> showNotification(String title, String body) async {
 }
 
 Future<void> scheduleNotification(
+  String body,
   int id,
   int day,
   int hour,
   int minute,
 ) async {
-  final now = tz.TZDateTime.now(tz.local);
-  final date = tz.TZDateTime(tz.local, now.year, now.month, day, hour, minute);
-  await notificationPlugin.zonedSchedule(
-    0,
-    '!!!',
-    'Don’t forget your task',
-    date,
-    const NotificationDetails(
-      android: AndroidNotificationDetails(
-        'your channel id',
-        'your channel name',
-        channelDescription: 'your channel description',
-      ),
-    ),
-    androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-    uiLocalNotificationDateInterpretation:
-        UILocalNotificationDateInterpretation.absoluteTime,
-    matchDateTimeComponents: DateTimeComponents.time,
-  );
-}
-
-Future<void> setScheduledNotifs() async {
-  await notificationPlugin.cancelAll();
-  for (Task task in tasks) {
-    if (task.remind) {
-      final date = stringToDate(task.date);
-      await scheduleNotification(
-        1,
-        date.day,
-        date.hour,
-        date.minute - notifyMinute,
-      );
-    }
+  try {
+    final now = tz.TZDateTime.now(tz.local);
+    final date = tz.TZDateTime(
+      tz.local,
+      now.year,
+      now.month,
+      day,
+      hour,
+      minute,
+    );
+    await notificationPlugin.zonedSchedule(
+      id,
+      'Don’t forget your task',
+      body,
+      date,
+      notificationDetails(),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+    );
+  } catch (e) {
+    logger(e);
   }
 }

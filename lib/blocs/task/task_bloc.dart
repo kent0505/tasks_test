@@ -16,7 +16,6 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     on<GetTask>((event, emit) async {
       await getTasks();
       await getPrefs();
-      await setScheduledNotifs();
       await Future.delayed(const Duration(seconds: 2));
       emit(TaskLoaded(tasks: tasks));
     });
@@ -24,7 +23,19 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     on<AddTask>((event, emit) async {
       tasks.insert(0, event.task);
       await updateTasks();
-      await setScheduledNotifs();
+      if (event.task.remind) {
+        final date1 = timeToDate(event.task.date);
+        final date2 = timeToDate(event.task.startTime);
+        await scheduleNotification(
+          event.task.title,
+          event.task.id,
+          date1.day,
+          date2.hour,
+          date2.minute,
+        );
+      } else {
+        await notificationPlugin.cancel(event.task.id);
+      }
       emit(TaskLoaded(tasks: tasks));
     });
 
@@ -41,14 +52,26 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
         }
       }
       await updateTasks();
-      await setScheduledNotifs();
+      if (event.task.remind) {
+        final date1 = timeToDate(event.task.date);
+        final date2 = timeToDate(event.task.startTime);
+        await scheduleNotification(
+          event.task.title,
+          event.task.id,
+          date1.day,
+          date2.hour,
+          date2.minute,
+        );
+      } else {
+        await notificationPlugin.cancel(event.task.id);
+      }
       emit(TaskLoaded(tasks: tasks));
     });
 
     on<DeleteTask>((event, emit) async {
       tasks.removeWhere((task) => task.id == event.task.id);
       await updateTasks();
-      await setScheduledNotifs();
+      await notificationPlugin.cancel(event.task.id);
       emit(TaskLoaded(tasks: tasks));
     });
 
@@ -118,8 +141,25 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
 
     on<SetNotifications>((event, emit) async {
       await saveInt(event.minute);
-      await notificationPlugin.cancelAll();
-      if (notifyMinute != 100) await setScheduledNotifs();
+      if (notifyMinute == 100) {
+        logger('ALL NOTIFS CANCELLED');
+        await notificationPlugin.cancelAll();
+      } else {
+        logger('SCHEDULING NOTIFS');
+        for (Task task in tasks) {
+          if (task.remind) {
+            final date1 = timeToDate(task.date);
+            final date2 = timeToDate(task.startTime);
+            await scheduleNotification(
+              task.title,
+              task.id,
+              date1.day,
+              date2.hour,
+              date2.minute,
+            );
+          }
+        }
+      }
       emit(TaskLoaded(tasks: tasks));
     });
   }
