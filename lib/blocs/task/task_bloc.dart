@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tasks_test/models/subtask.dart';
 
 import '../../core/hive.dart';
 import '../../models/cat.dart';
+import '../../models/subtask.dart';
 import '../../models/task.dart';
 import '../../core/utils.dart';
 
@@ -14,6 +14,13 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   TaskBloc() : super(TaskInitial()) {
     on<GetTask>((event, emit) async {
       await getTasks();
+      await cancelAllNotifications();
+      for (Task task in tasks) {
+        if (task.remind) {
+          final date = stringToDate(task.date);
+          await scheduleNotification(1, date.day, date.hour, date.minute);
+        }
+      }
       await Future.delayed(const Duration(seconds: 2));
       emit(TaskLoaded(tasks: tasks));
     });

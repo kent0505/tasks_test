@@ -5,9 +5,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'blocs/task/task_bloc.dart';
 import 'blocs/navbar/navbar_bloc.dart';
 import 'core/themes.dart';
+import 'core/utils.dart';
 import 'pages/splash_page.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initNotification();
   runApp(const MyApp());
 }
 
