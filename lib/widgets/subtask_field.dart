@@ -33,7 +33,8 @@ class SubtaskField extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           Expanded(
-            child: TextField(
+            child: TextFormField(
+              initialValue: subtask.title,
               style: const TextStyle(
                 color: AppColors.white,
                 fontSize: 16,

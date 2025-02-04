@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../blocs/navbar/navbar_bloc.dart';
+import '../blocs/task/task_bloc.dart';
 import '../core/app_colors.dart';
 import 'button.dart';
 import 'svg_widget.dart';
@@ -91,6 +92,7 @@ class _NavButton extends StatelessWidget {
           ? null
           : () {
               context.read<NavbarBloc>().add(ChangePage(index: id));
+              if (id == 1) context.read<TaskBloc>().add(ExitSearch());
             },
       padding: 0,
       child: SizedBox(

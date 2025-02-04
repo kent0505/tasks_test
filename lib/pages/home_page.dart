@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../core/utils.dart';
 import '../blocs/navbar/navbar_bloc.dart';
 import '../widgets/bottom_nav.dart';
 import 'settings_page.dart';
@@ -17,10 +16,7 @@ class HomePage extends StatelessWidget {
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
-          BlocConsumer<NavbarBloc, NavbarState>(
-            listener: (context, state) {
-              logger(state.runtimeType);
-            },
+          BlocBuilder<NavbarBloc, NavbarState>(
             builder: (context, state) {
               if (state is NavbarAdd) return const AddTaskPage();
 

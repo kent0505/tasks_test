@@ -42,6 +42,12 @@ class _TxtFieldState extends State<TxtField> {
   DateTime time = DateTime.now();
 
   @override
+  void initState() {
+    super.initState();
+    date = stringToDate(widget.controller.text);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       height: 52,

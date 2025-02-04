@@ -4,11 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../blocs/task/task_bloc.dart';
 import '../blocs/navbar/navbar_bloc.dart';
 import '../models/cat.dart';
+import '../models/subtask.dart';
 import '../models/task.dart';
 import '../core/utils.dart';
 import '../widgets/cats_widget.dart';
 import '../widgets/page_title.dart';
 import '../widgets/remind_button.dart';
+import '../widgets/subtask_add_button.dart';
+import '../widgets/subtask_field.dart';
 import '../widgets/title_text.dart';
 import '../widgets/txt_field.dart';
 
@@ -25,7 +28,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
   final controller3 = TextEditingController();
   final controller4 = TextEditingController();
 
-  // List<Subtask> subtasks = [];
+  List<Subtask> subtasks = [];
   Cat cat = Cat(id: 0, title: '');
   bool remind = false;
   bool active = false;
@@ -42,29 +45,29 @@ class _AddTaskPageState extends State<AddTaskPage> {
     });
   }
 
-  // void onAddSubtask() {
-  //   setState(() {
-  //     subtasks.add(Subtask(
-  //       id: subtasks.length,
-  //       title: '',
-  //       done: false,
-  //     ));
-  //   });
-  // }
+  void onAddSubtask() {
+    setState(() {
+      subtasks.add(Subtask(
+        id: subtasks.length,
+        title: '',
+        done: false,
+      ));
+    });
+  }
 
-  // void onSubtaskDone(Subtask value) {
-  //   setState(() {
-  //     for (Subtask subtask in subtasks) {
-  //       if (subtask.id == value.id) subtask.done = !subtask.done;
-  //     }
-  //   });
-  // }
+  void onSubtaskDone(Subtask value) {
+    setState(() {
+      for (Subtask subtask in subtasks) {
+        if (subtask.id == value.id) subtask.done = !subtask.done;
+      }
+    });
+  }
 
-  // void onSubtaskDelete(Subtask value) {
-  //   setState(() {
-  //     subtasks.removeWhere((element) => element.id == value.id);
-  //   });
-  // }
+  void onSubtaskDelete(Subtask value) {
+    setState(() {
+      subtasks.removeWhere((s) => s.id == value.id);
+    });
+  }
 
   void onCat(Cat value) {
     cat.id == value.id ? cat = Cat(id: 0, title: '') : cat = value;
@@ -83,7 +86,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
             task: Task(
               id: getTimestamp(),
               title: controller1.text,
-              // subtasks: subtasks,
+              subtasks: subtasks,
               cat: cat,
               date: controller2.text,
               startTime: controller3.text,
@@ -130,18 +133,18 @@ class _AddTaskPageState extends State<AddTaskPage> {
                 hintText: 'Title',
                 onChanged: onChanged,
               ),
-              // const SizedBox(height: 16),
-              // ...List.generate(
-              //   subtasks.length,
-              //   (index) {
-              //     return SubtaskField(
-              //       onDone: onSubtaskDone,
-              //       onDelete: onSubtaskDelete,
-              //       subtask: subtasks[index],
-              //     );
-              //   },
-              // ),
-              // SubtaskAddButton(onPressed: onAddSubtask),
+              const SizedBox(height: 16),
+              ...List.generate(
+                subtasks.length,
+                (index) {
+                  return SubtaskField(
+                    onDone: onSubtaskDone,
+                    onDelete: onSubtaskDelete,
+                    subtask: subtasks[index],
+                  );
+                },
+              ),
+              SubtaskAddButton(onPressed: onAddSubtask),
               const SizedBox(height: 16),
               const TitleText('Select a category for your task (optional)'),
               const SizedBox(height: 8),

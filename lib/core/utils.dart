@@ -14,17 +14,20 @@ String timeToString(DateTime time) {
   return DateFormat('HH:mm a').format(time);
 }
 
+DateTime stringToDate(String date) {
+  try {
+    return DateFormat('dd.MM.yyyy').parseStrict(date);
+  } catch (e) {
+    return DateTime.now();
+  }
+}
+
 void logger(Object message) => developer.log(message.toString());
 
 bool hasSameDate(List<Task> models, DateTime date) {
   try {
     return models.any((model) {
-      List<String> parts = model.date.split('.');
-      DateTime parsed = DateTime(
-        int.parse(parts[2]),
-        int.parse(parts[1]),
-        int.parse(parts[0]),
-      );
+      DateTime parsed = stringToDate(model.date);
       return parsed.year == date.year &&
           parsed.month == date.month &&
           parsed.day == date.day;

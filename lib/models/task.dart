@@ -10,8 +10,8 @@ class Task {
   @HiveField(1)
   String title;
 
-  // @HiveField(2)
-  // List subtasks;
+  @HiveField(2)
+  List subtasks;
 
   @HiveField(3)
   Cat cat;
@@ -34,7 +34,7 @@ class Task {
   Task({
     required this.id,
     required this.title,
-    // required this.subtasks,
+    required this.subtasks,
     required this.cat,
     required this.date,
     required this.startTime,
@@ -53,7 +53,7 @@ class TaskAdapter extends TypeAdapter<Task> {
     return Task(
       id: reader.readInt(),
       title: reader.readString(),
-      // subtasks: reader.read(),
+      subtasks: reader.readList(),
       cat: reader.read(),
       date: reader.readString(),
       startTime: reader.readString(),
@@ -67,7 +67,7 @@ class TaskAdapter extends TypeAdapter<Task> {
   void write(BinaryWriter writer, Task obj) {
     writer.writeInt(obj.id);
     writer.writeString(obj.title);
-    // writer.write(obj.subtasks);
+    writer.writeList(obj.subtasks);
     writer.write(obj.cat);
     writer.writeString(obj.date);
     writer.writeString(obj.startTime);

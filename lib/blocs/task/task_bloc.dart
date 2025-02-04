@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tasks_test/models/subtask.dart';
 
 import '../../core/hive.dart';
 import '../../models/cat.dart';
@@ -27,6 +28,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       for (Task task in tasks) {
         if (task.id == event.task.id) {
           task.title = event.task.title;
+          task.subtasks = event.task.subtasks;
           task.cat = event.task.cat;
           task.date = event.task.date;
           task.startTime = event.task.startTime;
@@ -47,6 +49,20 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     on<DoneTask>((event, emit) async {
       for (Task task in tasks) {
         if (task.id == event.task.id) task.done = !task.done;
+      }
+      await updateTasks();
+      emit(TaskLoaded(tasks: tasks));
+    });
+
+    on<DoneSubtask>((event, emit) async {
+      for (Task task in tasks) {
+        if (task.id == event.task.id) {
+          for (Subtask subtask in task.subtasks) {
+            if (subtask.id == event.subtask.id) {
+              subtask.done = !subtask.done;
+            }
+          }
+        }
       }
       await updateTasks();
       emit(TaskLoaded(tasks: tasks));

@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../blocs/task/task_bloc.dart';
 import '../core/app_colors.dart';
+import '../models/subtask.dart';
 import '../models/task.dart';
+import '../widgets/button.dart';
+import '../widgets/check_widget.dart';
 import '../widgets/page_title.dart';
 import '../widgets/svg_widget.dart';
 import 'edit_task_page.dart';
@@ -106,11 +111,19 @@ class TaskDetailsPage extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 12),
-                // _Subtasks(
-                //   subtasks: task.subtasks.cast<Subtask>(),
-                //   onPressed: (value) {},
-                // ),
-                // const SizedBox(height: 12),
+                BlocBuilder<TaskBloc, TaskState>(
+                  builder: (context, state) {
+                    return _Subtasks(
+                      subtasks: task.subtasks.cast<Subtask>(),
+                      onPressed: (value) {
+                        context
+                            .read<TaskBloc>()
+                            .add(DoneSubtask(task: task, subtask: value));
+                      },
+                    );
+                  },
+                ),
+                const SizedBox(height: 12),
               ],
             ),
           ),
@@ -152,61 +165,61 @@ class _Time extends StatelessWidget {
   }
 }
 
-// class _Subtasks extends StatelessWidget {
-//   const _Subtasks({
-//     required this.onPressed,
-//     required this.subtasks,
-//   });
+class _Subtasks extends StatelessWidget {
+  const _Subtasks({
+    required this.onPressed,
+    required this.subtasks,
+  });
 
-//   final void Function(Subtask) onPressed;
-//   final List<Subtask> subtasks;
+  final void Function(Subtask) onPressed;
+  final List<Subtask> subtasks;
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       padding: EdgeInsets.symmetric(
-//         horizontal: 16,
-//         vertical: subtasks.isEmpty ? 0 : 8,
-//       ).copyWith(bottom: 0),
-//       decoration: BoxDecoration(
-//         color: AppColors.tertiary1,
-//         borderRadius: BorderRadius.circular(24),
-//       ),
-//       child: Column(
-//         children: List.generate(
-//           subtasks.length,
-//           (index) {
-//             return Button(
-//               onPressed: () {
-//                 onPressed(subtasks[index]);
-//               },
-//               child: Container(
-//                 height: 44,
-//                 margin: const EdgeInsets.only(bottom: 8),
-//                 child: Row(
-//                   children: [
-//                     CheckWidget(
-//                       active: subtasks[index].done,
-//                       onPressed: null,
-//                     ),
-//                     const SizedBox(width: 8),
-//                     Expanded(
-//                       child: Text(
-//                         subtasks[index].title,
-//                         style: const TextStyle(
-//                           color: AppColors.white,
-//                           fontSize: 16,
-//                           fontFamily: 'w700',
-//                         ),
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//             );
-//           },
-//         ),
-//       ),
-//     );
-//   }
-// }
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: subtasks.isEmpty ? 0 : 8,
+      ).copyWith(bottom: 0),
+      decoration: BoxDecoration(
+        color: AppColors.tertiary1,
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Column(
+        children: List.generate(
+          subtasks.length,
+          (index) {
+            return Button(
+              onPressed: () {
+                onPressed(subtasks[index]);
+              },
+              child: Container(
+                height: 44,
+                margin: const EdgeInsets.only(bottom: 8),
+                child: Row(
+                  children: [
+                    CheckWidget(
+                      active: subtasks[index].done,
+                      onPressed: null,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        subtasks[index].title,
+                        style: const TextStyle(
+                          color: AppColors.white,
+                          fontSize: 16,
+                          fontFamily: 'w700',
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}

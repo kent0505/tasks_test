@@ -3,10 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../blocs/task/task_bloc.dart';
 import '../models/cat.dart';
+import '../models/subtask.dart';
 import '../models/task.dart';
 import '../widgets/cats_widget.dart';
 import '../widgets/page_title.dart';
 import '../widgets/remind_button.dart';
+import '../widgets/subtask_add_button.dart';
+import '../widgets/subtask_field.dart';
 import '../widgets/title_text.dart';
 import '../widgets/txt_field.dart';
 
@@ -25,6 +28,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
   final controller3 = TextEditingController();
   final controller4 = TextEditingController();
 
+  List<Subtask> subtasks = [];
   late Cat cat;
   bool remind = false;
   bool active = true;
@@ -38,6 +42,30 @@ class _EditTaskPageState extends State<EditTaskPage> {
             controller4,
           ].every((controller) => controller.text.isNotEmpty) &&
           cat.id != 0;
+    });
+  }
+
+  void onAddSubtask() {
+    setState(() {
+      subtasks.add(Subtask(
+        id: subtasks.length,
+        title: '',
+        done: false,
+      ));
+    });
+  }
+
+  void onSubtaskDone(Subtask value) {
+    setState(() {
+      for (Subtask subtask in subtasks) {
+        if (subtask.id == value.id) subtask.done = !subtask.done;
+      }
+    });
+  }
+
+  void onSubtaskDelete(Subtask value) {
+    setState(() {
+      subtasks.removeWhere((s) => s.id == value.id);
     });
   }
 
@@ -58,6 +86,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
             task: Task(
               id: widget.task.id,
               title: controller1.text,
+              subtasks: subtasks,
               cat: cat,
               date: controller2.text,
               startTime: controller3.text,
@@ -80,6 +109,10 @@ class _EditTaskPageState extends State<EditTaskPage> {
     controller4.text = widget.task.endTime;
     cat = widget.task.cat;
     remind = widget.task.remind;
+
+    subtasks = widget.task.subtasks
+        .map((e) => Subtask(id: e.id, title: e.title, done: e.done))
+        .toList();
   }
 
   @override
@@ -116,18 +149,18 @@ class _EditTaskPageState extends State<EditTaskPage> {
                   hintText: 'Title',
                   onChanged: onChanged,
                 ),
-                // const SizedBox(height: 16),
-                // ...List.generate(
-                //   subtasks.length,
-                //   (index) {
-                //     return SubtaskField(
-                //       onDone: onSubtaskDone,
-                //       onDelete: onSubtaskDelete,
-                //       subtask: subtasks[index],
-                //     );
-                //   },
-                // ),
-                // SubtaskAddButton(onPressed: onAddSubtask),
+                const SizedBox(height: 16),
+                ...List.generate(
+                  subtasks.length,
+                  (index) {
+                    return SubtaskField(
+                      onDone: onSubtaskDone,
+                      onDelete: onSubtaskDelete,
+                      subtask: subtasks[index],
+                    );
+                  },
+                ),
+                SubtaskAddButton(onPressed: onAddSubtask),
                 const SizedBox(height: 16),
                 const TitleText('Select a cat for your task (optional)'),
                 const SizedBox(height: 8),
